@@ -47,13 +47,13 @@
                 </b-button>
                 <!-- 時器 -->
                 <div class="ms-auto d-flex align-items-center">
-                    <b-form-input
-                        aria-label="Text input with checkbox"
-                        v-model="_createEmployeeTime"
-                        size="sm"
-                    ></b-form-input>
+                    <span v-if="invalidSetIntervalMsg" class="me-2" style="color: red; width: 500px">{{
+                        invalidSetIntervalMsg
+                    }}</span>
+                    <b-form-input v-model="_createEmployeeTime" size="sm"></b-form-input>
                     <b-button @click="autoCreateEmployee" size="sm" class="ms-2" variant="info">
-                        <b-icon icon="clock" aria-hidden="true"></b-icon>
+                        <b-icon v-if="!intervalId" icon="clock" aria-hidden="true"></b-icon>
+                        <b-icon v-else animation="spin-reverse-pulse" icon="clock" aria-hidden="true"></b-icon>
                     </b-button>
                 </div>
             </b-container>
@@ -72,10 +72,32 @@
                     label-sort-desc=""
                     label-sort-clear=""
                     rowSelected="true"
+                    :per-page="perpage"
+                    :current-page="currentPage"
                     @row-selected="onRowSelected"
                 >
-                    <b-button>btn</b-button>
+                    <template v-slot:cell(edit)="data">
+                        <b-button
+                            @click="handleEdit(data)"
+                            style="background-color: #256d85; font-size: 0.8rem"
+                            size="sm"
+                        >
+                            <b-icon icon="pencil" aria-hidden="true" variant=""></b-icon
+                        ></b-button>
+                    </template>
                 </b-table>
+                <b-row>
+                    <!-- <b-col class="me-auto"> 11</b-col> -->
+                    <b-col>
+                        <b-pagination
+                            class="justify-content-end"
+                            pills
+                            v-model="currentPage"
+                            :total-rows="rows"
+                            :per-page="perpage"
+                        ></b-pagination>
+                    </b-col>
+                </b-row>
             </div>
         </b-container>
         <!-- footer -->
@@ -85,11 +107,15 @@
 <script>
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
+import { getAccount } from '../plugins/apiInstance'
 import { getCurrentDateTime } from '../plugins/func'
-import { getAccount, getEmployee } from '../plugins/apiInstance'
+
 export default {
     data() {
         return {
+            perpage: 6,
+            currentPage: 1,
+            invalidSetIntervalMsg: '',
             id: '',
             name: '',
             createEmployeeTime: '',
@@ -109,11 +135,24 @@ export default {
                     label: ' 姓名 ',
                     class: 'text-center',
                 },
+                {
+                    key: 'edit',
+                    label: '操作',
+                    class: 'text-center',
+                },
             ],
-            employee: [],
+            employee: [
+                { id: 40, name: 'Dickerson' },
+                { id: 21, name: 'Larsen' },
+                { id: 89, name: 'Geneva' },
+                { id: 38, name: 'Jami' },
+            ],
         }
     },
     computed: {
+        rows() {
+            return this.employee.length
+        },
         _createEmployeeTime: {
             get() {
                 return this.createEmployeeTime
@@ -121,7 +160,13 @@ export default {
             set(value) {
                 if (value > 0) {
                     this.createEmployeeTime = value
+                    return
                 }
+                if (value === '') {
+                    this.invalidSetIntervalMsg = ''
+                    return
+                }
+                this.invalidSetIntervalMsg = '需要輸入數字，數字不得為0或負值'
             },
         },
     },
@@ -149,6 +194,9 @@ export default {
                 this.employee.push({ id: `${Date.now()}-${this.counter}`, name: getCurrentDateTime() })
                 console.log('run')
             }, this._createEmployeeTime)
+        },
+        handleEdit(data) {
+            console.log(data.item.id, data.item.name)
         },
     },
     mounted() {
