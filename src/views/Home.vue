@@ -8,7 +8,7 @@
             <!-- search -->
             <b-container fluid>
                 <b-row>
-                    <b-col cols="6" class="mt-4">
+                    <b-col md="6" sm="12" class="mt-4">
                         <b-input-group prepend="搜尋" class="mb-2 mr-sm-2 mb-sm-0">
                             <b-form-input
                                 v-model="searchWord"
@@ -20,79 +20,90 @@
                 </b-row>
             </b-container>
             <!-- action btns -->
-            <b-container class="mt-4 mb-2 d-flex" fluid>
-                <b-row>
-                    <b-col>
-                        <div class="d-flex">
-                            <!-- add employee btn -->
-                            <div class="me-2">
-                                <b-button v-b-modal.modal-prevent-closing size="sm" variant="primary">
-                                    <b-icon icon="plus" aria-hidden="true"></b-icon>
-                                </b-button>
-
-                                <b-modal
-                                    header-bg-variant="secondary"
-                                    header-text-variant="light"
-                                    id="modal-prevent-closing"
-                                    ref="modal"
-                                    hide-header-close="true"
-                                    title="增作業人員"
-                                    @show="resetModal"
-                                    @hidden="resetModal"
-                                    modal-ok="yes"
-                                    @ok="handleOk"
+            <b-container class="mt-4 mb-2 d-flex w-100 d-flex align-items-center justify-content-between" fluid>
+                <div class="d-flex align-items-center">
+                    <!-- add employee btn -->
+                    <div style="margin-right: 10px">
+                        <b-button v-b-modal.add-employee-modal size="sm" variant="primary">
+                            <b-icon icon="plus" aria-hidden="true"></b-icon>
+                        </b-button>
+                        <!-- add employee modal -->
+                        <b-modal
+                            header-bg-variant="secondary"
+                            header-text-variant="light"
+                            id="add-employee-modal"
+                            ref="modal"
+                            :hide-header-close="true"
+                            title="增作業人員"
+                            @show="resetModal"
+                            @hidden="resetModal"
+                            @ok="handleAddEmployee"
+                        >
+                            <form ref="form">
+                                <b-form-group
+                                    style="color: #f94c66"
+                                    class="mb-2"
+                                    label="*   工號"
+                                    invalid-feedback="Name is required"
                                 >
-                                    <!-- <form ref="form" @submit.stop.prevent="handleSubmit"> -->
-
-                                    <form ref="form">
-                                        <b-form-group
-                                            label="工號"
-                                            label-for="name-input"
-                                            invalid-feedback="Name is required"
-                                        >
-                                            <b-form-input id="name-input" v-model="employee.id" required></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group
-                                            label="姓名"
-                                            label-for="name-input"
-                                            invalid-feedback="Name is required"
-                                        >
-                                            <b-form-input
-                                                id="name-input"
-                                                v-model="employee.name"
-                                                required
-                                            ></b-form-input>
-                                        </b-form-group>
-                                    </form>
-                                </b-modal>
-                            </div>
-                            <!-- edit btn -->
-                            <!-- <b-button size="sm" class="mb-2 me-2" variant="secondary">
-                                <b-icon icon="pencil-square" aria-hidden="true"></b-icon>
-                            </b-button> -->
-                            <!-- delete btn -->
-                            <b-button @click="deleteEmployee" size="sm" class="mb-2 me-2" variant="danger">
-                                <b-icon icon="trash" aria-hidden="true"></b-icon>
-                            </b-button>
-                        </div>
-                    </b-col>
-                    <b-col class="ms-auto">
-                        <!-- 時器 -->
-                        <div class="d-flex align-items-center">
-                            <span v-if="invalidSetIntervalMsg" class="me-2" style="color: red; width: 500px">{{
+                                    <b-form-input id="name-input" v-model="employee.number" required></b-form-input>
+                                </b-form-group>
+                                <b-form-group
+                                    style="color: #f94c66"
+                                    label="*  姓名"
+                                    invalid-feedback="Name is required"
+                                >
+                                    <b-form-input id="name-input" v-model="employee.name" required></b-form-input>
+                                </b-form-group>
+                            </form>
+                        </b-modal>
+                    </div>
+                    <!-- delete btn -->
+                    <b-button
+                        :disabled="!rowSelectedCount > 0"
+                        @click="showDeleteEmployeeModal"
+                        size="sm"
+                        variant="danger"
+                    >
+                        <b-icon icon="trash" aria-hidden="true"></b-icon>
+                    </b-button>
+                    <!-- show delete employee submit modal -->
+                    <b-modal
+                        :hide-header-close="true"
+                        @ok="handleDeleteEmployee"
+                        v-model="isShowSubmitDeleteEmployeeModal"
+                        >Hello From Modal!</b-modal
+                    >
+                </div>
+                <!-- 時器 -->
+                <div class="d-flex align-items-center justify-content-end">
+                    <!-- <span v-if="invalidSetIntervalMsg" class="me-2" style="color: red; width: 600px">{{
                                 invalidSetIntervalMsg
-                            }}</span>
-                            <b-form-input v-model="_createEmployeeTime" size="sm"></b-form-input>
-                            <b-button @click="handleAutoCreateEmployee" size="sm" class="ms-2" variant="info">
-                                <b-icon v-if="!intervalId" icon="clock" aria-hidden="true"></b-icon>
-                                <b-icon v-else animation="spin-reverse-pulse" icon="clock" aria-hidden="true"></b-icon>
-                            </b-button>
+                            }}</span> -->
+                    <b-form-input style="width: 100px" v-model="_createEmployeeTime" size="sm"></b-form-input>
+                    <b-button @click="handleAutoCreateEmployee" size="sm" class="ms-2" variant="info">
+                        <b-icon v-if="!intervalId" icon="clock" aria-hidden="true"></b-icon>
+                        <b-icon v-else animation="spin-reverse-pulse" icon="clock" aria-hidden="true"></b-icon>
+                    </b-button>
+                </div>
+                <!-- show 時器 error -->
+                <b-toast :auto-hide-delay="3000" id="my-toast" variant="warning" solid>
+                    <template v-slot:toast-title>
+                        <div class="d-flex flex-grow-1 align-items-baseline">
+                            <b-img blank blank-color="#ff5555" class="mr-2" width="12" height="12"></b-img>
+                            <strong class="mr-auto">Notice!</strong>
                         </div>
-                    </b-col>
-                </b-row>
+                    </template>
+                    {{ invalidSetIntervalMsg }}
+                </b-toast>
             </b-container>
             <!-- table -->
-            <Table :items="employeeDisplay" :perpage="perpage" :currentPage="currentPage" />
+            <Table
+                @rowSelected="onRowSelected"
+                :items="employeeDisplay"
+                :perpage="perpage"
+                :currentPage="currentPage"
+            />
         </b-container>
         <!-- footer -->
         <Footer />
@@ -102,7 +113,7 @@
 import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
 import Table from '../components/Table.vue'
-import { createEmployee, deleteEmployee, getEmployee } from '../plugins/apiInstance'
+import { createEmployee, handleDeleteEmployee } from '../plugins/apiInstance'
 import { compareTwoString, getCurrentDateTime } from '../plugins/func'
 
 export default {
@@ -119,18 +130,22 @@ export default {
             intervalId: null,
             createEmployeeTime: '',
             counter: 0,
+            isShowSubmitDeleteEmployeeModal: false,
             employeeData: [
-                // { number: '2', name: 'John' },
-                // { number: '3', name: 'John1' },
+                { number: '2', name: 'John' },
+                { number: '3', name: 'John1' },
             ],
             employeeDisplay: [
-                // { number: '2', name: 'John' },
-                // { number: '3', name: 'John1' },
+                { number: '2', name: 'John' },
+                { number: '3', name: 'John1' },
             ],
             rowSelected: [],
         }
     },
     computed: {
+        rowSelectedCount() {
+            return this.rowSelected.length
+        },
         _createEmployeeTime: {
             get() {
                 return this.createEmployeeTime
@@ -140,11 +155,8 @@ export default {
                     this.createEmployeeTime = value
                     return
                 }
-                if (value === '') {
-                    this.invalidSetIntervalMsg = ''
-                    return
-                }
                 this.invalidSetIntervalMsg = '需要輸入數字，數字不得為0或負值'
+                this.$bvToast.show('my-toast')
             },
         },
     },
@@ -172,13 +184,24 @@ export default {
                 )
             })
         },
+        onRowSelected(rows) {
+            this.rowSelected = rows
+        },
         resetModal() {},
-        handleOk() {
-            console.log(this.id, this.name)
+        validateEmployee() {
+            if (this.employee.name === '' || this.employee.number === '') {
+                return false
+            }
+            return true
+        },
+        handleAddEmployee() {
+            if (!this.validateEmployee) return
+            console.log(this.employee.number, this.employee.name)
         },
         handleAutoCreateEmployee() {
             if (this.createEmployeeTime === '') {
                 this.invalidSetIntervalMsg = '需要輸入數字，數字不得為0或負值'
+                this.$bvToast.show('my-toast')
                 return
             }
             if (this.intervalId) {
@@ -195,22 +218,25 @@ export default {
                 console.log('run')
             }, this._createEmployeeTime)
         },
-
-        deleteEmployee() {
-            if (!this.rowSelected.length > 0) return
-            console.log(this.rowSelected)
+        showDeleteEmployeeModal() {
+            if (!this.rowSelectedCount > 0) return
+            this.isShowSubmitDeleteEmployeeModal = true
+        },
+        handleDeleteEmployee() {
+            this.rowSelected.forEach((x) => console.log(x.name))
+            // console.log(this.rowSelected)
         },
     },
     created() {
-        getEmployee({ headers: {} })
-            .then((res) => {
-                this.employeeData = res.data
-                this.employeeDisplay = res.data
-                console.log(res.data)
-            })
-            .catch((err) => {
-                this.$router.push('/')
-            })
+        // getEmployee({ headers: {} })
+        //     .then((res) => {
+        //         this.employeeData = res.data
+        //         this.employeeDisplay = res.data
+        //         console.log(res.data)
+        //     })
+        //     .catch((err) => {
+        //         this.$router.push('/')
+        //     })
     },
     destroyed() {
         if (this.intervalId) {

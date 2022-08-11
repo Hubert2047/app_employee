@@ -44,19 +44,20 @@ export default {
     },
     methods: {
         handleSubmit() {
-            apiLogin({
-                headers: {
-                    account: this.formData.account,
-                    password: md5(this.formData.password),
-                },
-            })
-                .then((res) => {
-                    this.loginSuccess()
-                    console.log(res)
-                })
-                .catch((err) => {
-                    this.errorMsg = err.response.data
-                })
+            // apiLogin({
+            //     headers: {
+            //         account: this.formData.account,
+            //         password: md5(this.formData.password),
+            //     },
+            // })
+            //     .then((res) => {
+            //         this.loginSuccess()
+            //         console.log(res)
+            //     })
+            //     .catch((err) => {
+            //         this.errorMsg = err.response.data
+            //     })
+            this.loginSuccess()
         },
         loginSuccess() {
             this.$router.push('/home')

@@ -18,11 +18,33 @@
             @row-selected="onRowSelected"
         >
             <template v-slot:cell(edit)="data">
-                <b-button @click="handleEdit(data)" style="background-color: #256d85; font-size: 0.8rem" size="sm">
+                <b-button @click="onEdit(data)" style="background-color: #256d85; font-size: 0.8rem" size="sm">
                     <b-icon icon="pencil" aria-hidden="true"></b-icon
                 ></b-button>
             </template>
         </b-table>
+
+        <b-modal
+            header-bg-variant="secondary"
+            header-text-variant="light"
+            id="editModal"
+            ref="modal"
+            :hide-header-close="true"
+            title="編輯作業人員"
+            @ok="handleSubmitEditEmployee"
+        >
+            <!-- <form ref="form" @submit.stop.prevent="handleSubmit"> -->
+
+            <form ref="form">
+                <b-form-group style="color: #f94c66" class="mb-2" label="＊ 工號" invalid-feedback="Name is required">
+                    <b-form-input id="name-input" v-model="employee.number" required></b-form-input>
+                </b-form-group>
+                <b-form-group style="color: #f94c66" label="＊ 姓名" invalid-feedback="Name is required">
+                    <b-form-input id="name-input" v-model="employee.name" required></b-form-input>
+                </b-form-group>
+            </form>
+        </b-modal>
+
         <b-row>
             <b-col class="me-auto"> 總共 {{ rows }} 條紀錄 </b-col>
             <b-col>
@@ -41,6 +63,10 @@
 export default {
     data() {
         return {
+            employee: {
+                name: '',
+                number: '',
+            },
             fields: [
                 {
                     key: 'number',
@@ -65,11 +91,14 @@ export default {
     props: ['items', 'perpage', 'currentPage'],
     methods: {
         onRowSelected(items) {
-            console.log(items)
-            //     this.rowSelected = items
+            this.$emit('rowSelected', items)
         },
-        handleEdit(data) {
-            console.log(data.item)
+        onEdit(data) {
+            this.employee = data.item
+            this.$bvModal.show('editModal')
+        },
+        handleSubmitEditEmployee() {
+            console.log(this.employee)
         },
     },
     computed: {

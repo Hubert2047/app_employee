@@ -1,28 +1,29 @@
 {
-  "name": "app",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
-  },
-  "dependencies": {
-    "axios": "^0.27.2",
-    "bootstrap": "^5.2.0",
-    "bootstrap-vue": "^2.22.0",
-    "core-js": "^3.6.4",
-    "js-md5": "^0.7.3",
-    "mdb-vue-ui-kit": "^2.0.0",
-    "portal-vue": "^2.1.7",
-    "vue": "^2.7.8",
-    "vue-router": "^3.1.5",
-    "vuex": "^3.1.2"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.2.3",
-    "@vue/cli-plugin-router": "~4.2.3",
-    "@vue/cli-plugin-vuex": "~4.2.3",
-    "@vue/cli-service": "~4.2.3",
-    "vue-template-compiler": "^2.6.11"
-  }
+    "name": "app",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "serve": "vue-cli-service serve",
+        "build": "vue-cli-service build"
+    },
+    "dependencies": {
+        "@popperjs/core": "^2.11.6",
+        "axios": "^0.27.2",
+        "bootstrap": "^4.6.1",
+        "bootstrap-vue": "^2.22.0",
+        "core-js": "^3.6.4",
+        "js-md5": "^0.7.3",
+        "mdb-vue-ui-kit": "^2.0.0",
+        "portal-vue": "^2.1.7",
+        "vue": "^2.7.8",
+        "vue-router": "^3.1.5",
+        "vuex": "^3.1.2"
+    },
+    "devDependencies": {
+        "@vue/cli-plugin-babel": "~4.2.3",
+        "@vue/cli-plugin-router": "~4.2.3",
+        "@vue/cli-plugin-vuex": "~4.2.3",
+        "@vue/cli-service": "~4.2.3",
+        "vue-template-compiler": "^2.6.11"
+    }
 }
