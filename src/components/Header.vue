@@ -15,13 +15,20 @@
     </b-container>
 </template>
 <script>
+import { apiLogout } from '../plugins/apiInstance'
 export default {
     data() {
         return {}
     },
     methods: {
         logOut() {
-            this.$router.push('/')
+            apiLogout()
+                .then((res) => {
+                    this.$router.push('/')
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
         },
     },
 }

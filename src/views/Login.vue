@@ -23,8 +23,8 @@
                     </b-input-group-prepend>
                     <b-form-input type="password" placeholder="Password" v-model="formData.password"></b-form-input>
                 </b-input-group>
-
-                <b-button type="submit" variant="primary" class="mt-2">Submit</b-button>
+                <p v-if="errorMsg" class="text-center" style="font-size: 20px; color: red">error</p>
+                <b-button type="submit" variant="primary" class="mt-2">登入</b-button>
             </b-form>
         </div>
     </div>
@@ -35,6 +35,7 @@ import { apiLogin } from '../plugins/apiInstance'
 export default {
     data() {
         return {
+            errorMsg: '',
             formData: {
                 account: '',
                 password: '',
@@ -54,7 +55,7 @@ export default {
                     console.log(res)
                 })
                 .catch((err) => {
-                    console.log(err)
+                    this.errorMsg = err.response.data
                 })
         },
         loginSuccess() {

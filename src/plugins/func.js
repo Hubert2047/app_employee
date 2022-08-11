@@ -5,3 +5,7 @@ export const getCurrentDateTime = () => {
     let dateTime = cDate + ' ' + cTime
     return dateTime
 }
+
+export const compareTwoString = (character, str) => {
+    return str.indexOf(character) < 0 ? false : true
+}
