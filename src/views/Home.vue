@@ -159,7 +159,7 @@ export default {
             })
             .catch((err) => {})
     },
-    async beforeRouteUpdate() {
+    beforeRouteUpdate() {
         console.log('run router')
     },
 }
